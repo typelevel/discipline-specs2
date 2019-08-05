@@ -21,7 +21,7 @@ install:
 script:
   - sbt ++$TRAVIS_SCALA_VERSION test
   - sbt ++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues
-  - if [ "$TRAVIS_SCALA_VERSION" = "2.12.8" ]; then sbt docs/makeMicrosite; fi
+  - if [ "$TRAVIS_SCALA_VERSION" = "2.12.8" ]; then sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite; fi
 
 after_success:
   - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "typelevel/discipline-specs2" && sbt ++$TRAVIS_SCALA_VERSION publish
