@@ -23,8 +23,12 @@ lazy val docs = project.in(file("docs"))
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
 
-// Who all from previous project should be included?
-lazy val contributors : Seq[(String, String)] = Seq()
+lazy val contributors = Seq(
+  "larsh" -> "Lars Hupel",
+  "travisbrown" -> "Travis Brown",
+  "buzden" -> "Dennis Buzdalov",
+  "ChristopherDavenport" -> "Christopher Davenport"
+)
 
 val disciplineV = "1.0.0"
 val specs2V = "4.7.0"
