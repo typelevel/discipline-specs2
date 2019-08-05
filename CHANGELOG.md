@@ -4,6 +4,6 @@ This file summarizes **notable** changes for each release, but does not describe
 
 ----
 
-## v1.0.0-M1 (2019-08-05)
+## v1.0.0-RC1 (2019-08-05)
 
 - Release cycle decoupled from discipline-core.
