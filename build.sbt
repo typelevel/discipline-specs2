@@ -33,15 +33,9 @@ lazy val contributors = Seq(
 val disciplineV = "1.0.1"
 val specs2V = "4.7.1"
 
-val kindProjectorV = "0.10.3"
-val betterMonadicForV = "0.3.1"
-
 // General Settings
 lazy val commonSettings = Seq(
   organization := "org.typelevel",
-
-  scalaVersion := "2.13.0",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.8", "2.11.12"),
 
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
@@ -49,11 +43,8 @@ lazy val commonSettings = Seq(
       "-doc-source-url", "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
 
-  addCompilerPlugin("org.typelevel" % "kind-projector" % kindProjectorV cross CrossVersion.binary),
-  addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % betterMonadicForV),
   libraryDependencies ++= Seq(
     "org.typelevel"               %%% "discipline-core"            % disciplineV,
-    "org.specs2"                  %%% "specs2-core"                % specs2V,
     "org.specs2"                  %%% "specs2-scalacheck"          % specs2V
   )
 )
@@ -134,7 +125,7 @@ lazy val mimaSettings = {
     val minorVersions : List[Int] =
       if (major >= 1) Range(0, minor).inclusive.toList
       else List(minor)
-    def patchVersions(currentMinVersion: Int): List[Int] = 
+    def patchVersions(currentMinVersion: Int): List[Int] =
       if (minor == 0 && patch == 0) List.empty[Int]
       else if (currentMinVersion != minor) List(0)
       else Range(0, patch - 1).inclusive.toList
@@ -167,7 +158,7 @@ lazy val mimaSettings = {
     mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
     mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
       .filterNot(excludedVersions.contains(_))
-      .map{v => 
+      .map{v =>
         val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
         organization.value % moduleN % v
       },
