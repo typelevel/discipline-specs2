@@ -23,10 +23,6 @@ script:
   - sbt ++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues
   - if [ "$TRAVIS_SCALA_VERSION" = "2.12.8" ]; then sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite; fi
 
-after_success:
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "typelevel/discipline-specs2" && sbt ++$TRAVIS_SCALA_VERSION publish
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "typelevel/discipline-specs2" && test $TRAVIS_SCALA_VERSION == "2.12.8" && sbt docs/publishMicrosite
-
 cache:
   directories:
     - $HOME/.ivy2/cache
