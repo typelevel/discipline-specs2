@@ -1,6 +1,6 @@
-# discipline-specs2 - Specs2 Integration for Discipline [![Build Status](https://travis-ci.com/typelevel/discipline-specs2.svg?branch=master)](https://travis-ci.com/typelevel/discipline-specs2) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.typelevel/discipline-specs2_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.typelevel/discipline-specs2_2.12) ![Code of Consuct](https://img.shields.io/badge/Code%20of%20Conduct-Scala-blue.svg)
+# discipline-specs2 - Specs2 Integration for Discipline [![Build Status](https://travis-ci.org/typelevel/discipline-specs2.svg?branch=master)](https://travis-ci.org/typelevel/discipline-specs2) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.typelevel/discipline-specs2_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.typelevel/discipline-specs2_2.12) ![Code of Consuct](https://img.shields.io/badge/Code%20of%20Conduct-Scala-blue.svg)
 
-## [Head on over to the microsite](https://typelevel.github.io/discipline-specs2)
+## [Head on over to the microsite](https://typelevel.org/discipline-specs2)
 
 ## Quick Start
 
