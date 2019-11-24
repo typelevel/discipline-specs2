@@ -31,7 +31,7 @@ lazy val contributors = Seq(
 )
 
 val disciplineV = "1.0.1"
-val specs2V = "4.8.0"
+val specs2V = "4.8.1"
 
 // General Settings
 lazy val commonSettings = Seq(
