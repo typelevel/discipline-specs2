@@ -33,6 +33,7 @@ lazy val `discipline-specs2` = project
   .in(file("."))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
+  .settings(crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.")))
   .aggregate(coreJVM, coreJS)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
