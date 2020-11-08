@@ -41,7 +41,8 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "discipline-specs2",
-    publishConfiguration := publishConfiguration.value.withOverwrite(true),   // needed since we double-publish on release
+    publishConfiguration := publishConfiguration.value
+      .withOverwrite(true) // needed since we double-publish on release
   )
   .jsSettings(crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.")))
 
@@ -77,14 +78,14 @@ lazy val commonSettings = Seq(
     "-doc-source-url",
     "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
-
   libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
-
   libraryDependencies += {
     if (isDotty.value)
-      ("org.specs2" %%% "specs2-scalacheck"  % specs2V).withDottyCompat(scalaVersion.value).exclude("org.scalacheck", "scalacheck_2.13")
+      ("org.specs2" %%% "specs2-scalacheck" % specs2V)
+        .withDottyCompat(scalaVersion.value)
+        .exclude("org.scalacheck", "scalacheck_2.13")
     else
-      "org.specs2" %%% "specs2-scalacheck"  % specs2V
+      "org.specs2" %%% "specs2-scalacheck" % specs2V
   }
 )
 
@@ -195,12 +196,18 @@ lazy val mimaSettings = {
   Seq(
     mimaFailOnNoPrevious := false,
     mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
-    mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
-      .filterNot(excludedVersions.contains(_))
-      .map { v =>
-        val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
-        organization.value % moduleN % v
-      },
+    mimaPreviousArtifacts := {
+      if (isDotty.value)
+        Set()
+      else {
+        (mimaVersions(version.value) ++ extraVersions)
+          .filterNot(excludedVersions.contains(_))
+          .map { v =>
+            val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
+            organization.value % moduleN % v
+          }
+      }
+    },
     mimaBinaryIssueFilters ++= {
       import com.typesafe.tools.mima.core._
       import com.typesafe.tools.mima.core.ProblemFilters._
