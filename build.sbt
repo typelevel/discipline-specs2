@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Scala212 = "2.12.12"
 
-ThisBuild / crossScalaVersions := Seq("2.11.12", Scala212, "2.13.3")
+ThisBuild / crossScalaVersions := Seq("0.27.0-RC1", "3.0.0-M1", "2.11.12", Scala212, "2.13.3")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 val MicrositesCond = s"matrix.scala == '$Scala212'"
@@ -40,8 +40,11 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .in(file("core"))
   .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
-    name := "discipline-specs2"
+    name := "discipline-specs2",
+    publishConfiguration := publishConfiguration.value
+      .withOverwrite(true) // needed since we double-publish on release
   )
+  .jsSettings(crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.")))
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
@@ -50,6 +53,7 @@ lazy val docs = project
   .in(file("docs"))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
+  .settings(crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.")))
   .dependsOn(coreJVM)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
@@ -74,10 +78,15 @@ lazy val commonSettings = Seq(
     "-doc-source-url",
     "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
-  libraryDependencies ++= Seq(
-    "org.typelevel" %%% "discipline-core" % disciplineV,
-    "org.specs2" %%% "specs2-scalacheck"  % specs2V
-  )
+  libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
+  libraryDependencies += {
+    if (isDotty.value)
+      ("org.specs2" %%% "specs2-scalacheck" % specs2V)
+        .withDottyCompat(scalaVersion.value)
+        .exclude("org.scalacheck", "scalacheck_2.13")
+    else
+      "org.specs2" %%% "specs2-scalacheck" % specs2V
+  }
 )
 
 lazy val releaseSettings = {
@@ -187,12 +196,18 @@ lazy val mimaSettings = {
   Seq(
     mimaFailOnNoPrevious := false,
     mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
-    mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
-      .filterNot(excludedVersions.contains(_))
-      .map { v =>
-        val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
-        organization.value % moduleN % v
-      },
+    mimaPreviousArtifacts := {
+      if (isDotty.value)
+        Set()
+      else {
+        (mimaVersions(version.value) ++ extraVersions)
+          .filterNot(excludedVersions.contains(_))
+          .map { v =>
+            val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
+            organization.value % moduleN % v
+          }
+      }
+    },
     mimaBinaryIssueFilters ++= {
       import com.typesafe.tools.mima.core._
       import com.typesafe.tools.mima.core.ProblemFilters._
