@@ -1,6 +1,36 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-lazy val `discipline-specs2` = project.in(file("."))
+val Scala212 = "2.12.12"
+
+ThisBuild / crossScalaVersions := Seq("2.11.12", Scala212, "2.13.3")
+ThisBuild / scalaVersion := crossScalaVersions.value.last
+
+val MicrositesCond = s"matrix.scala == '$Scala212'"
+
+ThisBuild / githubWorkflowPublishTargetBranches := Seq()
+
+ThisBuild / githubWorkflowBuildPreamble ++= Seq(
+  WorkflowStep.Use(
+    "ruby",
+    "setup-ruby",
+    "v1",
+    params = Map("ruby-version" -> "2.6"),
+    cond = Some(MicrositesCond)
+  ),
+  WorkflowStep.Run(List("gem install sass"), cond = Some(MicrositesCond)),
+  WorkflowStep.Run(List("gem install jekyll -v 3.2.1"), cond = Some(MicrositesCond))
+)
+
+ThisBuild / githubWorkflowBuild := Seq(
+  WorkflowStep.Sbt(
+    List("test", "mimaReportBinaryIssues"),
+    name = Some("Validate unit tests and binary compatibility")
+  ),
+  WorkflowStep.Sbt(List("docs/makeMicrosite"), cond = Some(MicrositesCond))
+)
+
+lazy val `discipline-specs2` = project
+  .in(file("."))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
   .aggregate(coreJVM, coreJS)
@@ -16,7 +46,8 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
 
-lazy val docs = project.in(file("docs"))
+lazy val docs = project
+  .in(file("docs"))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .dependsOn(coreJVM)
@@ -36,16 +67,16 @@ val specs2V = "4.10.5"
 // General Settings
 lazy val commonSettings = Seq(
   organization := "org.typelevel",
-
   scalacOptions in (Compile, doc) ++= Seq(
-      "-groups",
-      "-sourcepath", (baseDirectory in LocalRootProject).value.getAbsolutePath,
-      "-doc-source-url", "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
+    "-groups",
+    "-sourcepath",
+    (baseDirectory in LocalRootProject).value.getAbsolutePath,
+    "-doc-source-url",
+    "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
-
   libraryDependencies ++= Seq(
-    "org.typelevel"               %%% "discipline-core"            % disciplineV,
-    "org.specs2"                  %%% "specs2-scalacheck"          % specs2V
+    "org.typelevel" %%% "discipline-core" % disciplineV,
+    "org.specs2" %%% "specs2-scalacheck"  % specs2V
   )
 )
 
@@ -79,13 +110,12 @@ lazy val releaseSettings = {
       for {
         username <- Option(System.getenv().get("SONATYPE_USERNAME"))
         password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-      } yield
-        Credentials(
-          "Sonatype Nexus Repository Manager",
-          "oss.sonatype.org",
-          username,
-          password
-        )
+      } yield Credentials(
+        "Sonatype Nexus Repository Manager",
+        "oss.sonatype.org",
+        username,
+        password
+      )
     ).toSeq,
     publishArtifact in Test := false,
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
@@ -103,13 +133,14 @@ lazy val releaseSettings = {
     },
     pomExtra := {
       <developers>
-        {for ((username, name) <- contributors) yield
-        <developer>
+        {
+        for ((username, name) <- contributors)
+          yield <developer>
           <id>{username}</id>
           <name>{name}</name>
           <url>http://github.com/{username}</url>
         </developer>
-        }
+      }
       </developers>
     }
   )
@@ -122,7 +153,7 @@ lazy val mimaSettings = {
     val majorVersions: List[Int] =
       if (major == 0 && minor == 0) List.empty[Int] // If 0.0.x do not check MiMa
       else List(major)
-    val minorVersions : List[Int] =
+    val minorVersions: List[Int] =
       if (major >= 1) Range(0, minor).inclusive.toList
       else List(minor)
     def patchVersions(currentMinVersion: Int): List[Int] =
@@ -142,7 +173,7 @@ lazy val mimaSettings = {
     Version(version) match {
       case Some(Version(major, Seq(minor, patch), _)) =>
         semverBinCompatVersions(major.toInt, minor.toInt, patch.toInt)
-          .map{case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString}
+          .map { case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString }
       case _ =>
         Set.empty[String]
     }
@@ -158,7 +189,7 @@ lazy val mimaSettings = {
     mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
     mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
       .filterNot(excludedVersions.contains(_))
-      .map{v =>
+      .map { v =>
         val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
         organization.value % moduleN % v
       },
@@ -193,7 +224,6 @@ lazy val micrositeSettings = {
       "gray-lighter" -> "#F4F3F4",
       "white-color" -> "#FFFFFF"
     ),
-    fork in tut := true,
     scalacOptions in Tut --= Seq(
       "-Xfatal-warnings",
       "-Ywarn-unused-import",
@@ -203,9 +233,21 @@ lazy val micrositeSettings = {
       "-Xlint:-missing-interpolator,_"
     ),
     micrositeExtraMdFiles := Map(
-        file("CHANGELOG.md")        -> ExtraMdFileConfig("changelog.md", "page", Map("title" -> "changelog", "section" -> "changelog", "position" -> "100")),
-        file("CODE_OF_CONDUCT.md")  -> ExtraMdFileConfig("code-of-conduct.md",   "page", Map("title" -> "code of conduct",   "section" -> "code of conduct",   "position" -> "101")),
-        file("LICENSE")             -> ExtraMdFileConfig("license.md",   "page", Map("title" -> "license",   "section" -> "license",   "position" -> "102"))
+      file("CHANGELOG.md") -> ExtraMdFileConfig(
+        "changelog.md",
+        "page",
+        Map("title" -> "changelog", "section" -> "changelog", "position" -> "100")
+      ),
+      file("CODE_OF_CONDUCT.md") -> ExtraMdFileConfig(
+        "code-of-conduct.md",
+        "page",
+        Map("title" -> "code of conduct", "section" -> "code of conduct", "position" -> "101")
+      ),
+      file("LICENSE") -> ExtraMdFileConfig(
+        "license.md",
+        "page",
+        Map("title" -> "license", "section" -> "license", "position" -> "102")
+      )
     )
   )
 }
