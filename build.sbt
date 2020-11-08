@@ -87,6 +87,13 @@ lazy val commonSettings = Seq(
         .exclude("org.scalacheck", "scalacheck_2.13")
     else
       "org.specs2" %%% "specs2-scalacheck" % specs2V
+  },
+  Compile / doc / sources := {
+    val old = (Compile / doc / sources).value
+    if (isDotty.value)
+      Seq()
+    else
+      old
   }
 )
 
