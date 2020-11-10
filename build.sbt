@@ -66,7 +66,7 @@ lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport"
 )
 
-val disciplineV = "1.1.1"
+val disciplineV = "1.1.2"
 val specs2V = "4.10.5"
 
 // General Settings
