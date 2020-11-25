@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Scala212 = "2.12.12"
 
-ThisBuild / crossScalaVersions := Seq("0.27.0-RC1", "3.0.0-M1", "2.11.12", Scala212, "2.13.3")
+ThisBuild / crossScalaVersions := Seq("3.0.0-M1", "3.0.0-M2", "2.11.12", Scala212, "2.13.3")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 val MicrositesCond = s"matrix.scala == '$Scala212'"
@@ -45,7 +45,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     publishConfiguration := publishConfiguration.value
       .withOverwrite(true) // needed since we double-publish on release
   )
-  .jsSettings(crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.")))
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
@@ -85,6 +84,7 @@ lazy val commonSettings = Seq(
       ("org.specs2" %%% "specs2-scalacheck" % specs2V)
         .withDottyCompat(scalaVersion.value)
         .exclude("org.scalacheck", "scalacheck_2.13")
+        .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
     else
       "org.specs2" %%% "specs2-scalacheck" % specs2V
   },
