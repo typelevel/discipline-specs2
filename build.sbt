@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Scala212 = "2.12.12"
 
-ThisBuild / crossScalaVersions := Seq("3.0.0-M1", "3.0.0-M2", "2.11.12", Scala212, "2.13.3")
+ThisBuild / crossScalaVersions := Seq("3.0.0-M2", "3.0.0-M3", "2.11.12", Scala212, "2.13.3")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 val MicrositesCond = s"matrix.scala == '$Scala212'"
@@ -65,7 +65,7 @@ lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport"
 )
 
-val disciplineV = "1.1.2"
+val disciplineV = "1.1.3"
 val specs2V = "4.10.5"
 
 // General Settings
