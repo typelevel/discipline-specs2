@@ -56,7 +56,6 @@ lazy val docs = project
   .settings(crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.")))
   .dependsOn(coreJVM)
   .enablePlugins(MicrositesPlugin)
-  .enablePlugins(TutPlugin)
 
 lazy val contributors = Seq(
   "larsh" -> "Lars Hupel",
@@ -246,14 +245,6 @@ lazy val micrositeSettings = {
       "gray-light" -> "#E5E5E6",
       "gray-lighter" -> "#F4F3F4",
       "white-color" -> "#FFFFFF"
-    ),
-    scalacOptions in Tut --= Seq(
-      "-Xfatal-warnings",
-      "-Ywarn-unused-import",
-      "-Ywarn-numeric-widen",
-      "-Ywarn-dead-code",
-      "-Ywarn-unused:imports",
-      "-Xlint:-missing-interpolator,_"
     ),
     micrositeExtraMdFiles := Map(
       file("CHANGELOG.md") -> ExtraMdFileConfig(
