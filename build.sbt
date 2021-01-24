@@ -11,9 +11,7 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq()
 
 ThisBuild / githubWorkflowBuildPreamble ++= Seq(
   WorkflowStep.Use(
-    "ruby",
-    "setup-ruby",
-    "v1",
+    UseRef.Public("ruby", "setup-ruby", "v1"),
     params = Map("ruby-version" -> "2.6"),
     cond = Some(MicrositesCond)
   ),
