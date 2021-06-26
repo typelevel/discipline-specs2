@@ -77,9 +77,9 @@ lazy val commonSettings = Seq(
   ),
   libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
   libraryDependencies += {
-    if (isDotty.value)
+    if (scalaBinaryVersion.value == "3")
       ("org.specs2" %%% "specs2-scalacheck" % specs2V)
-        .withDottyCompat(scalaVersion.value)
+        .cross(CrossVersion.for3Use2_13)
         .exclude("org.scalacheck", "scalacheck_2.13")
         .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
     else
@@ -87,7 +87,7 @@ lazy val commonSettings = Seq(
   },
   Compile / doc / sources := {
     val old = (Compile / doc / sources).value
-    if (isDotty.value)
+    if (scalaBinaryVersion.value == "3")
       Seq()
     else
       old
@@ -202,7 +202,7 @@ lazy val mimaSettings = {
     mimaFailOnNoPrevious := false,
     mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
     mimaPreviousArtifacts := {
-      if (isDotty.value)
+      if (scalaBinaryVersion.value == "3")
         Set()
       else {
         (mimaVersions(version.value) ++ extraVersions)
