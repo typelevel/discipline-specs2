@@ -44,16 +44,17 @@ trait GroupLaws extends Laws {
   )
 
   class GroupProperties(
-    name: String,
-    parent: Option[GroupProperties],
-    props: (String, Prop)*
+      name: String,
+      parent: Option[GroupProperties],
+      props: (String, Prop)*
   ) extends DefaultRuleSet(name, parent, props: _*)
 
   class AdditiveProperties(
-    val base: GroupProperties,
-    val parent: Option[AdditiveProperties],
-    val props: (String, Prop)*
-  ) extends RuleSet with HasOneParent {
+      val base: GroupProperties,
+      val parent: Option[AdditiveProperties],
+      val props: (String, Prop)*
+  ) extends RuleSet
+      with HasOneParent {
     val name = base.name
     val bases = Seq("base" -> base)
   }
@@ -108,10 +109,11 @@ object RingLaws extends GroupLaws {
   )
 
   class MultiplicativeProperties(
-    val base: GroupLaws => GroupLaws#GroupProperties,
-    val parent: Option[MultiplicativeProperties],
-    val props: (String, Prop)*
-  ) extends RuleSet with HasOneParent {
+      val base: GroupLaws => GroupLaws#GroupProperties,
+      val parent: Option[MultiplicativeProperties],
+      val props: (String, Prop)*
+  ) extends RuleSet
+      with HasOneParent {
     private val _base = base(RingLaws.this)
 
     val name = _base.name
@@ -119,11 +121,11 @@ object RingLaws extends GroupLaws {
   }
 
   class RingProperties(
-    val name: String,
-    val al: AdditiveProperties,
-    val ml: MultiplicativeProperties,
-    val parents: Seq[RingProperties],
-    val props: (String, Prop)*
+      val name: String,
+      val al: AdditiveProperties,
+      val ml: MultiplicativeProperties,
+      val parents: Seq[RingProperties],
+      val props: (String, Prop)*
   ) extends RuleSet {
     def bases = Seq("additive" -> al, "multiplicative" -> ml)
   }
