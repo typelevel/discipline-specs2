@@ -68,10 +68,10 @@ val specs2V = "4.12.3"
 // General Settings
 lazy val commonSettings = Seq(
   organization := "org.typelevel",
-  scalacOptions in (Compile, doc) ++= Seq(
+  Compile / doc / scalacOptions ++= Seq(
     "-groups",
     "-sourcepath",
-    (baseDirectory in LocalRootProject).value.getAbsolutePath,
+    (LocalRootProject / baseDirectory).value.getAbsolutePath,
     "-doc-source-url",
     "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
@@ -131,7 +131,7 @@ lazy val releaseSettings = {
         password
       )
     ).toSeq,
-    publishArtifact in Test := false,
+    Test / publishArtifact := false,
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
     scmInfo := Some(
       ScmInfo(
@@ -265,7 +265,7 @@ lazy val micrositeSettings = {
 }
 
 lazy val skipOnPublishSettings = Seq(
-  skip in publish := true,
+  publish / skip := true,
   publish := (()),
   publishLocal := (()),
   publishArtifact := false,
