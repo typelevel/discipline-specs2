@@ -5,6 +5,9 @@ val Scala212 = "2.12.14"
 ThisBuild / crossScalaVersions := Seq("3.0.2", Scala212, "2.13.6")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
+ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
+ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/vasilmkd/jdk-index/raw/main/index.json")
+
 val MicrositesCond = s"matrix.scala == '$Scala212'"
 
 ThisBuild / githubWorkflowPublishTargetBranches := Seq()
