@@ -1,16 +1,61 @@
+/*
+ * Copyright 2018-2021 Typelevel
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+
+ThisBuild / baseVersion := "1.2"
+
+ThisBuild / organization := "org.typelevel"
+ThisBuild / organizationName := "Typelevel"
+
+ThisBuild / developers := List(
+  Developer("larsrh", "Lars Hupel", "", url("https://github.com/larsrh")),
+  Developer("travisbrown", "Travis Brown", "", url("https://github.com/travisbrown")),
+  Developer(
+    "ChristopherDavenport",
+    "Christopher Davenport",
+    "",
+    url("https://github.com/ChristopherDavenport")
+  ),
+  Developer("djspiewak", "Daniel Spiewak", "", url("https://github.com/djspiewak")),
+  Developer("vasilmkd", "Vasil Vasilev", "", url("https://github.com/vasilmkd"))
+)
 
 val Scala212 = "2.12.14"
 
 ThisBuild / crossScalaVersions := Seq("3.0.2", Scala212, "2.13.6")
-ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
 ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/vasilmkd/jdk-index/raw/main/index.json")
 
-val MicrositesCond = s"matrix.scala == '$Scala212'"
+ThisBuild / githubWorkflowUseSbtThinClient := false
+ThisBuild / githubWorkflowTargetBranches := Seq("main")
 
-ThisBuild / githubWorkflowPublishTargetBranches := Seq()
+ThisBuild / homepage := Some(url("https://github.com/typelevel/discipline-specs2"))
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/typelevel/discipline-specs2"),
+    "git@github.com:typelevel/discipline-specs2.git"
+  )
+)
+
+ThisBuild / startYear := Some(2018)
+ThisBuild / endYear := Some(2021)
+
+val MicrositesCond = s"matrix.scala == '$Scala212'"
 
 ThisBuild / githubWorkflowBuildPreamble ++= Seq(
   WorkflowStep.Use(
@@ -32,19 +77,16 @@ ThisBuild / githubWorkflowBuild := Seq(
 
 lazy val `discipline-specs2` = project
   .in(file("."))
-  .disablePlugins(MimaPlugin)
-  .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .settings(crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.")))
   .aggregate(coreJVM, coreJS)
+  .enablePlugins(NoPublishPlugin)
+  .settings(commonSettings)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
-  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(commonSettings)
   .settings(
-    name := "discipline-specs2",
-    publishConfiguration := publishConfiguration.value
-      .withOverwrite(true) // needed since we double-publish on release
+    name := "discipline-specs2"
   )
 
 lazy val coreJVM = core.jvm
@@ -52,25 +94,15 @@ lazy val coreJS = core.js
 
 lazy val docs = project
   .in(file("docs"))
-  .disablePlugins(MimaPlugin)
-  .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
-  .settings(crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.")))
+  .enablePlugins(MicrositesPlugin, NoPublishPlugin)
+  .settings(commonSettings, micrositeSettings)
   .dependsOn(coreJVM)
-  .enablePlugins(MicrositesPlugin)
-
-lazy val contributors = Seq(
-  "larsh" -> "Lars Hupel",
-  "travisbrown" -> "Travis Brown",
-  "buzden" -> "Dennis Buzdalov",
-  "ChristopherDavenport" -> "Christopher Davenport"
-)
 
 val disciplineV = "1.1.5"
 val specs2V = "4.12.8"
 
 // General Settings
 lazy val commonSettings = Seq(
-  organization := "org.typelevel",
   Compile / doc / scalacOptions ++= Seq(
     "-groups",
     "-sourcepath",
@@ -80,7 +112,7 @@ lazy val commonSettings = Seq(
   ),
   libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
   libraryDependencies += {
-    if (scalaBinaryVersion.value == "3")
+    if (isDotty.value)
       ("org.specs2" %%% "specs2-scalacheck" % specs2V)
         .cross(CrossVersion.for3Use2_13)
         .exclude("org.scalacheck", "scalacheck_2.13")
@@ -90,139 +122,12 @@ lazy val commonSettings = Seq(
   },
   Compile / doc / sources := {
     val old = (Compile / doc / sources).value
-    if (scalaBinaryVersion.value == "3")
+    if (isDotty.value)
       Seq()
     else
       old
   }
 )
-
-lazy val releaseSettings = {
-  import ReleaseTransformations._
-  Seq(
-    releaseCrossBuild := true,
-    releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,
-      inquireVersions,
-      runClean,
-      runTest,
-      setReleaseVersion,
-      commitReleaseVersion,
-      tagRelease,
-      // For non cross-build projects, use releaseStepCommand("publishSigned")
-      releaseStepCommandAndRemaining("+publishSigned"),
-      setNextVersion,
-      commitNextVersion,
-      releaseStepCommand("sonatypeReleaseAll"),
-      pushChanges
-    ),
-    publishTo := {
-      val nexus = "https://oss.sonatype.org/"
-      if (isSnapshot.value)
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
-    },
-    credentials ++= (
-      for {
-        username <- Option(System.getenv().get("SONATYPE_USERNAME"))
-        password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-      } yield Credentials(
-        "Sonatype Nexus Repository Manager",
-        "oss.sonatype.org",
-        username,
-        password
-      )
-    ).toSeq,
-    Test / publishArtifact := false,
-    releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-    scmInfo := Some(
-      ScmInfo(
-        url("https://github.com/typelevel/discipline-specs2"),
-        "git@github.com:typelevel/discipline-specs2.git"
-      )
-    ),
-    homepage := Some(url("https://github.com/typelevel/discipline-specs2")),
-    licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-    publishMavenStyle := true,
-    pomIncludeRepository := { _ =>
-      false
-    },
-    pomExtra := {
-      <developers>
-        {
-        for ((username, name) <- contributors)
-          yield <developer>
-          <id>{username}</id>
-          <name>{name}</name>
-          <url>http://github.com/{username}</url>
-        </developer>
-      }
-      </developers>
-    }
-  )
-}
-
-lazy val mimaSettings = {
-  import sbtrelease.Version
-
-  def semverBinCompatVersions(major: Int, minor: Int, patch: Int): Set[(Int, Int, Int)] = {
-    val majorVersions: List[Int] =
-      if (major == 0 && minor == 0) List.empty[Int] // If 0.0.x do not check MiMa
-      else List(major)
-    val minorVersions: List[Int] =
-      if (major >= 1) Range(0, minor).inclusive.toList
-      else List(minor)
-    def patchVersions(currentMinVersion: Int): List[Int] =
-      if (minor == 0 && patch == 0) List.empty[Int]
-      else if (currentMinVersion != minor) List(0)
-      else Range(0, patch - 1).inclusive.toList
-
-    val versions = for {
-      maj <- majorVersions
-      min <- minorVersions
-      pat <- patchVersions(min)
-    } yield (maj, min, pat)
-    versions.toSet
-  }
-
-  def mimaVersions(version: String): Set[String] = {
-    Version(version) match {
-      case Some(Version(major, Seq(minor, patch), _)) =>
-        semverBinCompatVersions(major.toInt, minor.toInt, patch.toInt)
-          .map { case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString }
-      case _ =>
-        Set.empty[String]
-    }
-  }
-  // Safety Net For Exclusions
-  lazy val excludedVersions: Set[String] = Set()
-
-  // Safety Net for Inclusions
-  lazy val extraVersions: Set[String] = Set()
-
-  Seq(
-    mimaFailOnNoPrevious := false,
-    mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
-    mimaPreviousArtifacts := {
-      if (scalaBinaryVersion.value == "3")
-        Set()
-      else {
-        (mimaVersions(version.value) ++ extraVersions)
-          .filterNot(excludedVersions.contains(_))
-          .map { v =>
-            val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
-            organization.value % moduleN % v
-          }
-      }
-    },
-    mimaBinaryIssueFilters ++= {
-      import com.typesafe.tools.mima.core._
-      import com.typesafe.tools.mima.core.ProblemFilters._
-      Seq()
-    }
-  )
-}
 
 lazy val micrositeSettings = {
   import microsites._
@@ -266,11 +171,3 @@ lazy val micrositeSettings = {
     )
   )
 }
-
-lazy val skipOnPublishSettings = Seq(
-  publish / skip := true,
-  publish := (()),
-  publishLocal := (()),
-  publishArtifact := false,
-  publishTo := None
-)
