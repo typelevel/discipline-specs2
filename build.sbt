@@ -100,6 +100,7 @@ lazy val docs = project
 
 val disciplineV = "1.1.5"
 val specs2V = "4.12.10"
+val specs2DottyV = "5.0.0-RC-07"
 
 // General Settings
 lazy val commonSettings = Seq(
@@ -113,10 +114,7 @@ lazy val commonSettings = Seq(
   libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
   libraryDependencies += {
     if (isDotty.value)
-      ("org.specs2" %%% "specs2-scalacheck" % specs2V)
-        .cross(CrossVersion.for3Use2_13)
-        .exclude("org.scalacheck", "scalacheck_2.13")
-        .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
+      "org.specs2" %%% "specs2-scalacheck" % specs2DottyV
     else
       "org.specs2" %%% "specs2-scalacheck" % specs2V
   },

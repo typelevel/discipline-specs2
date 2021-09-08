@@ -25,10 +25,10 @@ import org.specs2.scalacheck.Parameters
 trait Discipline extends ScalaCheck { self: SpecificationLike =>
 
   def checkAll(name: String, ruleSet: Laws#RuleSet)(implicit p: Parameters) = {
-    s"""${ruleSet.name} laws must hold for ${name}""" ^ br ^ t ^
-      Fragments.foreach(ruleSet.all.properties.toList) { case (id, prop) =>
-        id ! check(prop, p, defaultFreqMapPretty) ^ br
-      } ^ br ^ bt
+    br ^ br ^ s"""${ruleSet.name} laws must hold for ${name}""" ^ br ^ t ^
+      Fragments.foreach(ruleSet.all.properties.toList.zipWithIndex) { case ((id, prop), n) =>
+        id ! check(prop, p, defaultFreqMapPretty) ^ (if (n != ruleSet.all.properties.toList.size - 1) br else bt)
+      }
   }
 
 }
