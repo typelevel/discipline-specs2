@@ -34,9 +34,9 @@ ThisBuild / developers := List(
   Developer("vasilmkd", "Vasil Vasilev", "", url("https://github.com/vasilmkd"))
 )
 
-val Scala212 = "2.12.14"
+val Scala213 = "2.13.6"
 
-ThisBuild / crossScalaVersions := Seq("3.0.2", Scala212, "2.13.6")
+ThisBuild / crossScalaVersions := Seq("3.0.2", "2.12.14", Scala213)
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
 ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/vasilmkd/jdk-index/raw/main/index.json")
@@ -55,7 +55,7 @@ ThisBuild / scmInfo := Some(
 ThisBuild / startYear := Some(2018)
 ThisBuild / endYear := Some(2021)
 
-val MicrositesCond = s"matrix.scala == '$Scala212'"
+val MicrositesCond = s"matrix.scala == '$Scala213'"
 
 ThisBuild / githubWorkflowBuildPreamble ++= Seq(
   WorkflowStep.Use(
@@ -136,7 +136,7 @@ lazy val micrositeSettings = {
     micrositeGithubOwner := "typelevel",
     micrositeGithubRepo := "discipline-specs2",
     micrositeBaseUrl := "/discipline-specs2",
-    micrositeDocumentationUrl := "https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.12",
+    micrositeDocumentationUrl := "https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13",
     micrositeGitterChannelUrl := "typelevel/cats",
     micrositeFooterText := None,
     micrositeHighlightTheme := "atom-one-light",
