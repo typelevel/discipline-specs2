@@ -86,19 +86,30 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .in(file("core"))
   .settings(docsSettings)
   .settings(
-    name := "discipline-specs2"
+    name := "discipline-specs2",
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV
   )
-  .settings(
-    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
+  .jvmSettings(
     libraryDependencies += {
       if (isDotty.value)
         ("org.specs2" %%% "specs2-scalacheck" % specs2V)
           .cross(CrossVersion.for3Use2_13)
           .exclude("org.scalacheck", "scalacheck_2.13")
-          .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
       else
         "org.specs2" %%% "specs2-scalacheck" % specs2V
     }
+  )
+  .jsSettings(
+    libraryDependencies += {
+      if (isDotty.value)
+        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
+          .cross(CrossVersion.for3Use2_13)
+          .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
+          .exclude("org.scala-js", "scala-js-macrotask-executor_sjs1_2.13")
+      else
+        "org.specs2" %%% "specs2-scalacheck" % specs2V
+    },
+    libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % macrotaskExecutorV
   )
 
 lazy val coreJVM = core.jvm
@@ -112,6 +123,7 @@ lazy val docs = project
 
 val disciplineV = "1.1.5"
 val specs2V = "4.12.12"
+val macrotaskExecutorV = "0.1.0"
 
 // General Settings
 lazy val docsSettings = Seq(
