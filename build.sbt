@@ -31,7 +31,7 @@ ThisBuild / developers := List(
     url("https://github.com/ChristopherDavenport")
   ),
   Developer("djspiewak", "Daniel Spiewak", "", url("https://github.com/djspiewak")),
-  Developer("vasilmkd", "Vasil Vasilev", "", url("https://github.com/vasilmkd"))
+  Developer("vasilmkd", "Vasil Vasilev", "vasil@vasilev.io", url("https://github.com/vasilmkd"))
 )
 
 val Scala213 = "2.13.6"
