@@ -79,14 +79,26 @@ lazy val `discipline-specs2` = project
   .in(file("."))
   .aggregate(coreJVM, coreJS)
   .enablePlugins(NoPublishPlugin)
-  .settings(commonSettings)
+  .settings(docsSettings)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
-  .settings(commonSettings)
+  .settings(docsSettings)
   .settings(
     name := "discipline-specs2"
+  )
+  .settings(
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
+    libraryDependencies += {
+      if (isDotty.value)
+        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
+          .cross(CrossVersion.for3Use2_13)
+          .exclude("org.scalacheck", "scalacheck_2.13")
+          .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
+      else
+        "org.specs2" %%% "specs2-scalacheck" % specs2V
+    }
   )
 
 lazy val coreJVM = core.jvm
@@ -95,14 +107,14 @@ lazy val coreJS = core.js
 lazy val docs = project
   .in(file("docs"))
   .enablePlugins(MicrositesPlugin, NoPublishPlugin)
-  .settings(commonSettings, micrositeSettings)
+  .settings(docsSettings, micrositeSettings)
   .dependsOn(coreJVM)
 
 val disciplineV = "1.1.5"
 val specs2V = "4.12.12"
 
 // General Settings
-lazy val commonSettings = Seq(
+lazy val docsSettings = Seq(
   Compile / doc / scalacOptions ++= Seq(
     "-groups",
     "-sourcepath",
@@ -110,16 +122,6 @@ lazy val commonSettings = Seq(
     "-doc-source-url",
     "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
-  libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
-  libraryDependencies += {
-    if (isDotty.value)
-      ("org.specs2" %%% "specs2-scalacheck" % specs2V)
-        .cross(CrossVersion.for3Use2_13)
-        .exclude("org.scalacheck", "scalacheck_2.13")
-        .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
-    else
-      "org.specs2" %%% "specs2-scalacheck" % specs2V
-  },
   Compile / doc / sources := {
     val old = (Compile / doc / sources).value
     if (isDotty.value)
