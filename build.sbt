@@ -99,7 +99,7 @@ lazy val docs = project
   .dependsOn(coreJVM)
 
 val disciplineV = "1.1.5"
-val specs2V = "4.12.11"
+val specs2V = "4.12.12"
 
 // General Settings
 lazy val commonSettings = Seq(
