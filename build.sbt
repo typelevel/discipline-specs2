@@ -31,7 +31,7 @@ ThisBuild / developers := List(
     url("https://github.com/ChristopherDavenport")
   ),
   Developer("djspiewak", "Daniel Spiewak", "", url("https://github.com/djspiewak")),
-  Developer("vasilmkd", "Vasil Vasilev", "", url("https://github.com/vasilmkd"))
+  Developer("vasilmkd", "Vasil Vasilev", "vasil@vasilev.io", url("https://github.com/vasilmkd"))
 )
 
 val Scala213 = "2.13.6"
@@ -79,14 +79,37 @@ lazy val `discipline-specs2` = project
   .in(file("."))
   .aggregate(coreJVM, coreJS)
   .enablePlugins(NoPublishPlugin)
-  .settings(commonSettings)
+  .settings(docsSettings)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
-  .settings(commonSettings)
+  .settings(docsSettings)
   .settings(
-    name := "discipline-specs2"
+    name := "discipline-specs2",
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV
+  )
+  .jvmSettings(
+    libraryDependencies += {
+      if (isDotty.value)
+        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
+          .cross(CrossVersion.for3Use2_13)
+          .exclude("org.scalacheck", "scalacheck_2.13")
+      else
+        "org.specs2" %%% "specs2-scalacheck" % specs2V
+    }
+  )
+  .jsSettings(
+    libraryDependencies += {
+      if (isDotty.value)
+        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
+          .cross(CrossVersion.for3Use2_13)
+          .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
+          .exclude("org.scala-js", "scala-js-macrotask-executor_sjs1_2.13")
+      else
+        "org.specs2" %%% "specs2-scalacheck" % specs2V
+    },
+    libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % macrotaskExecutorV
   )
 
 lazy val coreJVM = core.jvm
@@ -95,14 +118,15 @@ lazy val coreJS = core.js
 lazy val docs = project
   .in(file("docs"))
   .enablePlugins(MicrositesPlugin, NoPublishPlugin)
-  .settings(commonSettings, micrositeSettings)
+  .settings(docsSettings, micrositeSettings)
   .dependsOn(coreJVM)
 
 val disciplineV = "1.1.5"
 val specs2V = "4.12.12"
+val macrotaskExecutorV = "0.1.0"
 
 // General Settings
-lazy val commonSettings = Seq(
+lazy val docsSettings = Seq(
   Compile / doc / scalacOptions ++= Seq(
     "-groups",
     "-sourcepath",
@@ -110,16 +134,6 @@ lazy val commonSettings = Seq(
     "-doc-source-url",
     "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
-  libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
-  libraryDependencies += {
-    if (isDotty.value)
-      ("org.specs2" %%% "specs2-scalacheck" % specs2V)
-        .cross(CrossVersion.for3Use2_13)
-        .exclude("org.scalacheck", "scalacheck_2.13")
-        .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
-    else
-      "org.specs2" %%% "specs2-scalacheck" % specs2V
-  },
   Compile / doc / sources := {
     val old = (Compile / doc / sources).value
     if (isDotty.value)
