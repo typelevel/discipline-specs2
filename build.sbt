@@ -83,10 +83,16 @@ lazy val `discipline-specs2` = project
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
-  .settings(docsSettings)
   .settings(
     name := "discipline-specs2",
-    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
+    Compile / doc / sources := {
+      val old = (Compile / doc / sources).value
+      if (isDotty.value)
+        Seq()
+      else
+        old
+    }
   )
   .jvmSettings(
     libraryDependencies += {
@@ -123,17 +129,6 @@ lazy val docs = project
 val disciplineV = "1.1.5"
 val specs2V = "4.12.12"
 val macrotaskExecutorV = "0.1.0"
-
-// General Settings
-lazy val docsSettings = Seq(
-  Compile / doc / sources := {
-    val old = (Compile / doc / sources).value
-    if (isDotty.value)
-      Seq()
-    else
-      old
-  }
-)
 
 lazy val micrositeSettings = {
   import microsites._
