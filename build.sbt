@@ -75,19 +75,28 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("docs/makeMicrosite"), cond = Some(MicrositesCond))
 )
 
+val disciplineV = "1.1.5"
+val specs2V = "4.12.12"
+val macrotaskExecutorV = "0.1.0"
+
 lazy val `discipline-specs2` = project
   .in(file("."))
   .aggregate(coreJVM, coreJS)
   .enablePlugins(NoPublishPlugin)
-  .settings(docsSettings)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
-  .settings(docsSettings)
   .settings(
     name := "discipline-specs2",
-    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
+    Compile / doc / sources := {
+      val old = (Compile / doc / sources).value
+      if (isDotty.value)
+        Seq()
+      else
+        old
+    }
   )
   .jvmSettings(
     libraryDependencies += {
@@ -118,30 +127,8 @@ lazy val coreJS = core.js
 lazy val docs = project
   .in(file("docs"))
   .enablePlugins(MicrositesPlugin, NoPublishPlugin)
-  .settings(docsSettings, micrositeSettings)
+  .settings(micrositeSettings)
   .dependsOn(coreJVM)
-
-val disciplineV = "1.1.5"
-val specs2V = "4.12.12"
-val macrotaskExecutorV = "0.1.0"
-
-// General Settings
-lazy val docsSettings = Seq(
-  Compile / doc / scalacOptions ++= Seq(
-    "-groups",
-    "-sourcepath",
-    (LocalRootProject / baseDirectory).value.getAbsolutePath,
-    "-doc-source-url",
-    "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
-  ),
-  Compile / doc / sources := {
-    val old = (Compile / doc / sources).value
-    if (isDotty.value)
-      Seq()
-    else
-      old
-  }
-)
 
 lazy val micrositeSettings = {
   import microsites._
