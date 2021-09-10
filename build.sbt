@@ -79,7 +79,6 @@ lazy val `discipline-specs2` = project
   .in(file("."))
   .aggregate(coreJVM, coreJS)
   .enablePlugins(NoPublishPlugin)
-  .settings(docsSettings)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -118,7 +117,7 @@ lazy val coreJS = core.js
 lazy val docs = project
   .in(file("docs"))
   .enablePlugins(MicrositesPlugin, NoPublishPlugin)
-  .settings(docsSettings, micrositeSettings)
+  .settings(micrositeSettings)
   .dependsOn(coreJVM)
 
 val disciplineV = "1.1.5"
@@ -127,13 +126,6 @@ val macrotaskExecutorV = "0.1.0"
 
 // General Settings
 lazy val docsSettings = Seq(
-  Compile / doc / scalacOptions ++= Seq(
-    "-groups",
-    "-sourcepath",
-    (LocalRootProject / baseDirectory).value.getAbsolutePath,
-    "-doc-source-url",
-    "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
-  ),
   Compile / doc / sources := {
     val old = (Compile / doc / sources).value
     if (isDotty.value)
