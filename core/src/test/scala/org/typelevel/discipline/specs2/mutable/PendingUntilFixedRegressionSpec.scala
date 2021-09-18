@@ -22,9 +22,7 @@ import org.specs2.mutable.Specification
 class PendingUntilFixedRegressionSpec extends Specification with Discipline {
   "Pending until fixed" should {
     "work for forAll" in {
-      forAll { (_: Int) =>
-        failure("Boom!")
-      }.pendingUntilFixed
+      forAll { (_: Int) => failure("Boom!") }.pendingUntilFixed
     }
   }
 }
