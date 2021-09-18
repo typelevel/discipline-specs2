@@ -27,8 +27,9 @@ trait Discipline extends ScalaCheck { self: SpecificationLike =>
   def checkAll(name: String, ruleSet: Laws#RuleSet)(implicit p: Parameters) = {
     s"""${ruleSet.name} laws must hold for $name""".txt
     br
-    Fragments.foreach(ruleSet.all.properties.toList) { case (id, prop) =>
-      id in check(prop, p, defaultFreqMapPretty)
+    Fragments.foreach(ruleSet.all.properties.toList) {
+      case (id, prop) =>
+        id in check(prop, p, defaultFreqMapPretty)
     }
   }
 

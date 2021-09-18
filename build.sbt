@@ -79,10 +79,8 @@ val disciplineV = "1.1.5"
 val specs2V = "4.12.12"
 val macrotaskExecutorV = "0.1.0"
 
-lazy val `discipline-specs2` = project
-  .in(file("."))
-  .aggregate(coreJVM, coreJS)
-  .enablePlugins(NoPublishPlugin)
+lazy val `discipline-specs2` =
+  project.in(file(".")).aggregate(coreJVM, coreJS).enablePlugins(NoPublishPlugin)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
