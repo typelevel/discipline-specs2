@@ -76,7 +76,7 @@ ThisBuild / githubWorkflowBuild := Seq(
 )
 
 val disciplineV = "1.1.5"
-val specs2V = "4.12.12"
+val specs2V = "4.13.0"
 val macrotaskExecutorV = "0.1.0"
 
 lazy val `discipline-specs2` =
