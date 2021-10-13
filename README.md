@@ -9,6 +9,6 @@ To use discipline-specs2 in an existing SBT project with Scala 2.11 or a later v
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "discipline-specs2" % "1.2.2"
+  "org.typelevel" %% "discipline-specs2" % "1.2.3"
 )
 ```
