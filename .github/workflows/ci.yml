@@ -55,10 +55,7 @@ jobs:
           ruby-version: 2.6
 
       - if: matrix.scala == '2.13.6'
-        run: gem install sass
-
-      - if: matrix.scala == '2.13.6'
-        run: gem install jekyll -v 3.2.1
+        run: gem install jekyll -v 4
 
       - name: Check that workflows are up to date
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck

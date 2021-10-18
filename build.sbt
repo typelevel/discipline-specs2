@@ -63,8 +63,7 @@ ThisBuild / githubWorkflowBuildPreamble ++= Seq(
     params = Map("ruby-version" -> "2.6"),
     cond = Some(MicrositesCond)
   ),
-  WorkflowStep.Run(List("gem install sass"), cond = Some(MicrositesCond)),
-  WorkflowStep.Run(List("gem install jekyll -v 3.2.1"), cond = Some(MicrositesCond))
+  WorkflowStep.Run(List("gem install jekyll -v 4"), cond = Some(MicrositesCond))
 )
 
 ThisBuild / githubWorkflowBuild := Seq(
