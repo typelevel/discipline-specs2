@@ -36,7 +36,7 @@ ThisBuild / developers := List(
 
 val Scala213 = "2.13.6"
 
-ThisBuild / crossScalaVersions := Seq("3.0.2", "2.12.15", Scala213)
+ThisBuild / crossScalaVersions := Seq("3.1.0", "2.12.15", Scala213)
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
 ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/typelevel/jdk-index/raw/main/index.json")
