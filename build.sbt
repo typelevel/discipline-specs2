@@ -71,14 +71,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .in(file("core"))
   .settings(
     name := "discipline-specs2",
-    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
-    Compile / doc / sources := {
-      val old = (Compile / doc / sources).value
-      if (isDotty.value)
-        Seq()
-      else
-        old
-    }
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV
   )
   .jvmSettings(
     libraryDependencies += {
