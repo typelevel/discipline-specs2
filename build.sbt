@@ -1,19 +1,3 @@
-/*
- * Copyright 2018-2021 Typelevel
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 ThisBuild / baseVersion := "2.0"
 
 ThisBuild / organization := "org.typelevel"
@@ -29,14 +13,14 @@ ThisBuild / developers := List(
     url("https://github.com/ChristopherDavenport")
   ),
   Developer("djspiewak", "Daniel Spiewak", "", url("https://github.com/djspiewak")),
-  Developer("vasilmkd", "Vasil Vasilev", "", url("https://github.com/vasilmkd"))
+  Developer("vasilmkd", "Vasil Vasilev", "vasil@vasilev.io", url("https://github.com/vasilmkd"))
 )
 
 val Scala3 = "3.1.0"
 ThisBuild / crossScalaVersions := Seq(Scala3)
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
-ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/vasilmkd/jdk-index/raw/main/index.json")
+ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/typelevel/jdk-index/raw/main/index.json")
 
 ThisBuild / githubWorkflowUseSbtThinClient := false
 ThisBuild / githubWorkflowTargetBranches := Seq("main")
@@ -49,7 +33,8 @@ ThisBuild / scmInfo := Some(
   )
 )
 
-ThisBuild / startYear := Some(2018)
+ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
+ThisBuild / startYear := Some(2019)
 ThisBuild / endYear := Some(2021)
 
 ThisBuild / githubWorkflowBuildPreamble ++= Seq(
@@ -57,8 +42,7 @@ ThisBuild / githubWorkflowBuildPreamble ++= Seq(
     UseRef.Public("ruby", "setup-ruby", "v1"),
     params = Map("ruby-version" -> "2.6")
   ),
-  WorkflowStep.Run(List("gem install sass")),
-  WorkflowStep.Run(List("gem install jekyll -v 3.2.1"))
+  WorkflowStep.Run(List("gem install jekyll -v 4"))
 )
 
 ThisBuild / githubWorkflowBuild := Seq(
@@ -69,18 +53,19 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("docs/makeMicrosite"))
 )
 
-lazy val `discipline-specs2` = project
-  .in(file("."))
-  .aggregate(coreJVM, coreJS)
-  .enablePlugins(NoPublishPlugin)
-  .settings(commonSettings)
+val disciplineV = "1.3.0"
+val specs2V = "5.0.0-RC-16"
+
+lazy val `discipline-specs2` =
+  project.in(file(".")).aggregate(coreJVM, coreJS).enablePlugins(NoPublishPlugin)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
-  .settings(commonSettings)
   .settings(
-    name := "discipline-specs2"
+    name := "discipline-specs2",
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
+    libraryDependencies += "org.specs2" %%% "specs2-scalacheck" % specs2V
   )
 
 lazy val coreJVM = core.jvm
@@ -89,24 +74,8 @@ lazy val coreJS = core.js
 lazy val docs = project
   .in(file("docs"))
   .enablePlugins(MicrositesPlugin, NoPublishPlugin)
-  .settings(commonSettings, micrositeSettings)
+  .settings(micrositeSettings)
   .dependsOn(coreJVM)
-
-val disciplineV = "1.1.5"
-val specs2V = "5.0.0-RC-16"
-
-// General Settings
-lazy val commonSettings = Seq(
-  Compile / doc / scalacOptions ++= Seq(
-    "-groups",
-    "-sourcepath",
-    (LocalRootProject / baseDirectory).value.getAbsolutePath,
-    "-doc-source-url",
-    "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
-  ),
-  libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
-  libraryDependencies += "org.specs2" %%% "specs2-scalacheck" % specs2V
-)
 
 lazy val micrositeSettings = {
   import microsites._

@@ -15,7 +15,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  JABBA_INDEX: 'https://github.com/vasilmkd/jdk-index/raw/main/index.json'
+  JABBA_INDEX: 'https://github.com/typelevel/jdk-index/raw/main/index.json'
 
 jobs:
   build:
@@ -53,9 +53,7 @@ jobs:
         with:
           ruby-version: 2.6
 
-      - run: gem install sass
-
-      - run: gem install jekyll -v 3.2.1
+      - run: gem install jekyll -v 4
 
       - name: Check that workflows are up to date
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
