@@ -35,10 +35,11 @@ trait Discipline extends ScalaCheck { self: SpecificationLike =>
     s"""${ruleSet.name} laws must hold for $name""".txt
     br
     t
-    Fragments.foreach(ruleSet.all.properties.toList.zipWithIndex) { case ((id, prop), n) =>
-      addFragment(fragmentFactory.example(id, check(prop, p, defaultFreqMapPretty)))
-      if (n != ruleSet.all.properties.toList.size - 1) br
-      else bt
+    Fragments.foreach(ruleSet.all.properties.toList.zipWithIndex) {
+      case ((id, prop), n) =>
+        addFragment(fragmentFactory.example(id, check(prop, p, defaultFreqMapPretty)))
+        if (n != ruleSet.all.properties.toList.size - 1) br
+        else bt
     }
     br
   }
