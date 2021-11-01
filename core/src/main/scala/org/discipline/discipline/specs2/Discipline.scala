@@ -22,6 +22,8 @@ import org.specs2.SpecificationLike
 import org.specs2.specification.core.Fragments
 import org.specs2.scalacheck.Parameters
 
+import scala.language.implicitConversions
+
 trait Discipline extends ScalaCheck { self: SpecificationLike =>
 
   def checkAll(name: String, ruleSet: Laws#RuleSet)(implicit p: Parameters) = {
