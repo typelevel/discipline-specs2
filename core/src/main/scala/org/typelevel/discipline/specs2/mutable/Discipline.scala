@@ -40,6 +40,7 @@ trait Discipline extends ScalaCheck { self: SpecificationLike =>
       if (n != ruleSet.all.properties.toList.size - 1) br
       else bt
     }
+    br
   }
 
 }
