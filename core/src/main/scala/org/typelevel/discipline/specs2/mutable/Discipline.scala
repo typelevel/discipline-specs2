@@ -29,19 +29,17 @@ import org.specs2.specification.core.Fragments
 
 import scala.language.implicitConversions
 
-trait Discipline extends ScalaCheck { self: SpecificationLike =>
+trait Discipline extends ScalaCheck:
+  self: SpecificationLike =>
 
-  def checkAll(name: String, ruleSet: Laws#RuleSet)(implicit p: Parameters) = {
+  def checkAll(name: String, ruleSet: Laws#RuleSet)(using p: Parameters) =
     s"""${ruleSet.name} laws must hold for $name""".txt
     br
     t
     Fragments.foreach(ruleSet.all.properties.toList.zipWithIndex) {
       case ((id, prop), n) =>
         addFragment(fragmentFactory.example(id, check(prop, p, defaultFreqMapPretty)))
-        if (n != ruleSet.all.properties.toList.size - 1) br
+        if n != ruleSet.all.properties.toList.size - 1 then br
         else bt
     }
     br
-  }
-
-}

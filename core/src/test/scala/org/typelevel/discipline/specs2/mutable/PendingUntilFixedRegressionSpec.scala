@@ -24,10 +24,7 @@ package org.typelevel.discipline.specs2.mutable
 import org.scalacheck.Prop.forAll
 import org.specs2.mutable.Specification
 
-class PendingUntilFixedRegressionSpec extends Specification with Discipline {
+class PendingUntilFixedRegressionSpec extends Specification, Discipline:
   "Pending until fixed" should {
-    "work for forAll" in {
-      forAll { (_: Int) => failure("Boom!") }.pendingUntilFixed
-    }
+    "work for forAll" in forAll { (_: Int) => failure("Boom!") }.pendingUntilFixed
   }
-}

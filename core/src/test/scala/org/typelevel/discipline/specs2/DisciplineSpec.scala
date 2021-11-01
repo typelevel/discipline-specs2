@@ -24,7 +24,5 @@ package specs2
 
 import org.specs2.Specification
 
-class DisciplineSpec extends Specification with Discipline {
-  def is =
-    checkAll("Int", RingLaws.ring)
-}
+class DisciplineSpec extends Specification, Discipline:
+  def is = checkAll("Int", RingLaws.ring)
