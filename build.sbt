@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-
-ThisBuild / baseVersion := "1.2"
+ThisBuild / baseVersion := "2.0"
 
 ThisBuild / organization := "org.typelevel"
 ThisBuild / organizationName := "Typelevel"
@@ -34,9 +32,8 @@ ThisBuild / developers := List(
   Developer("vasilmkd", "Vasil Vasilev", "", url("https://github.com/vasilmkd"))
 )
 
-val Scala213 = "2.13.6"
-
-ThisBuild / crossScalaVersions := Seq("3.0.2", "2.12.14", Scala213)
+val Scala3 = "3.1.0"
+ThisBuild / crossScalaVersions := Seq(Scala3)
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
 ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/vasilmkd/jdk-index/raw/main/index.json")
@@ -55,16 +52,13 @@ ThisBuild / scmInfo := Some(
 ThisBuild / startYear := Some(2018)
 ThisBuild / endYear := Some(2021)
 
-val MicrositesCond = s"matrix.scala == '$Scala213'"
-
 ThisBuild / githubWorkflowBuildPreamble ++= Seq(
   WorkflowStep.Use(
     UseRef.Public("ruby", "setup-ruby", "v1"),
-    params = Map("ruby-version" -> "2.6"),
-    cond = Some(MicrositesCond)
+    params = Map("ruby-version" -> "2.6")
   ),
-  WorkflowStep.Run(List("gem install sass"), cond = Some(MicrositesCond)),
-  WorkflowStep.Run(List("gem install jekyll -v 3.2.1"), cond = Some(MicrositesCond))
+  WorkflowStep.Run(List("gem install sass")),
+  WorkflowStep.Run(List("gem install jekyll -v 3.2.1"))
 )
 
 ThisBuild / githubWorkflowBuild := Seq(
@@ -72,7 +66,7 @@ ThisBuild / githubWorkflowBuild := Seq(
     List("test", "mimaReportBinaryIssues"),
     name = Some("Validate unit tests and binary compatibility")
   ),
-  WorkflowStep.Sbt(List("docs/makeMicrosite"), cond = Some(MicrositesCond))
+  WorkflowStep.Sbt(List("docs/makeMicrosite"))
 )
 
 lazy val `discipline-specs2` = project
@@ -99,8 +93,7 @@ lazy val docs = project
   .dependsOn(coreJVM)
 
 val disciplineV = "1.1.5"
-val specs2V = "4.12.10"
-val specs2DottyV = "5.0.0-RC-07"
+val specs2V = "5.0.0-RC-16"
 
 // General Settings
 lazy val commonSettings = Seq(
@@ -112,19 +105,7 @@ lazy val commonSettings = Seq(
     "https://github.com/typelevel/discipline-specs2/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
   libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
-  libraryDependencies += {
-    if (isDotty.value)
-      "org.specs2" %%% "specs2-scalacheck" % specs2DottyV
-    else
-      "org.specs2" %%% "specs2-scalacheck" % specs2V
-  },
-  Compile / doc / sources := {
-    val old = (Compile / doc / sources).value
-    if (isDotty.value)
-      Seq()
-    else
-      old
-  }
+  libraryDependencies += "org.specs2" %%% "specs2-scalacheck" % specs2V
 )
 
 lazy val micrositeSettings = {
