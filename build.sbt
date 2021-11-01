@@ -1,6 +1,4 @@
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-
-ThisBuild / baseVersion := "1.3"
+ThisBuild / baseVersion := "2.0"
 
 ThisBuild / organization := "org.typelevel"
 ThisBuild / organizationName := "Typelevel"
@@ -18,15 +16,14 @@ ThisBuild / developers := List(
   Developer("vasilmkd", "Vasil Vasilev", "vasil@vasilev.io", url("https://github.com/vasilmkd"))
 )
 
-val Scala213 = "2.13.6"
-
-ThisBuild / crossScalaVersions := Seq("3.1.0", "2.12.15", Scala213)
+val Scala3 = "3.1.0"
+ThisBuild / crossScalaVersions := Seq(Scala3)
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
 ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/typelevel/jdk-index/raw/main/index.json")
 
 ThisBuild / githubWorkflowUseSbtThinClient := false
-ThisBuild / githubWorkflowTargetBranches := Seq("main")
+ThisBuild / githubWorkflowTargetBranches := Seq("series/2.x")
 
 ThisBuild / homepage := Some(url("https://github.com/typelevel/discipline-specs2"))
 ThisBuild / scmInfo := Some(
@@ -40,15 +37,12 @@ ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
 ThisBuild / startYear := Some(2019)
 ThisBuild / endYear := Some(2021)
 
-val MicrositesCond = s"matrix.scala == '$Scala213'"
-
 ThisBuild / githubWorkflowBuildPreamble ++= Seq(
   WorkflowStep.Use(
     UseRef.Public("ruby", "setup-ruby", "v1"),
-    params = Map("ruby-version" -> "2.6"),
-    cond = Some(MicrositesCond)
+    params = Map("ruby-version" -> "2.6")
   ),
-  WorkflowStep.Run(List("gem install jekyll -v 4"), cond = Some(MicrositesCond))
+  WorkflowStep.Run(List("gem install jekyll -v 4"))
 )
 
 ThisBuild / githubWorkflowBuild := Seq(
@@ -56,12 +50,11 @@ ThisBuild / githubWorkflowBuild := Seq(
     List("test", "mimaReportBinaryIssues"),
     name = Some("Validate unit tests and binary compatibility")
   ),
-  WorkflowStep.Sbt(List("docs/makeMicrosite"), cond = Some(MicrositesCond))
+  WorkflowStep.Sbt(List("docs/makeMicrosite"))
 )
 
 val disciplineV = "1.3.0"
-val specs2V = "4.13.0"
-val macrotaskExecutorV = "1.0.0"
+val specs2V = "5.0.0-RC-16"
 
 lazy val `discipline-specs2` =
   project.in(file(".")).aggregate(coreJVM, coreJS).enablePlugins(NoPublishPlugin)
@@ -71,29 +64,8 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .in(file("core"))
   .settings(
     name := "discipline-specs2",
-    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV
-  )
-  .jvmSettings(
-    libraryDependencies += {
-      if (isDotty.value)
-        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
-          .cross(CrossVersion.for3Use2_13)
-          .exclude("org.scalacheck", "scalacheck_2.13")
-      else
-        "org.specs2" %%% "specs2-scalacheck" % specs2V
-    }
-  )
-  .jsSettings(
-    libraryDependencies += {
-      if (isDotty.value)
-        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
-          .cross(CrossVersion.for3Use2_13)
-          .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
-          .exclude("org.scala-js", "scala-js-macrotask-executor_sjs1_2.13")
-      else
-        "org.specs2" %%% "specs2-scalacheck" % specs2V
-    },
-    libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % macrotaskExecutorV
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
+    libraryDependencies += "org.specs2" %%% "specs2-scalacheck" % specs2V
   )
 
 lazy val coreJVM = core.jvm
