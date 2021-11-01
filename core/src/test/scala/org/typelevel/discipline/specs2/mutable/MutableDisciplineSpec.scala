@@ -24,6 +24,5 @@ package specs2.mutable
 
 import org.specs2.mutable.Specification
 
-class MutableDisciplineSpec extends Specification with Discipline {
+class MutableDisciplineSpec extends Specification, Discipline:
   checkAll("Int", RingLaws.ring)
-}

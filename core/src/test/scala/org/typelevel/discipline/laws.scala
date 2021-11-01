@@ -23,13 +23,14 @@ package org.typelevel.discipline
 
 import org.scalacheck.Prop
 
-object Dummy {
+import scala.language.adhocExtensions
+
+object Dummy:
   def prop = Prop(_ => Prop.Result(status = Prop.True))
-}
 
 // adapted from spire
 
-trait GroupLaws extends Laws {
+trait GroupLaws extends Laws:
 
   def semigroup = new GroupProperties(
     name = "semigroup",
@@ -68,21 +69,18 @@ trait GroupLaws extends Laws {
       name: String,
       parent: Option[GroupProperties],
       props: (String, Prop)*
-  ) extends DefaultRuleSet(name, parent, props: _*)
+  ) extends DefaultRuleSet(name, parent, props*)
 
   class AdditiveProperties(
       val base: GroupProperties,
       val parent: Option[AdditiveProperties],
       val props: (String, Prop)*
-  ) extends RuleSet
-      with HasOneParent {
+  ) extends RuleSet,
+        HasOneParent:
     val name = base.name
     val bases = Seq("base" -> base)
-  }
 
-}
-
-object RingLaws extends GroupLaws {
+object RingLaws extends GroupLaws:
 
   def multiplicativeSemigroup = new MultiplicativeProperties(
     base = _.semigroup,
@@ -133,13 +131,12 @@ object RingLaws extends GroupLaws {
       val base: GroupLaws => GroupLaws#GroupProperties,
       val parent: Option[MultiplicativeProperties],
       val props: (String, Prop)*
-  ) extends RuleSet
-      with HasOneParent {
+  ) extends RuleSet,
+        HasOneParent:
     private val _base = base(RingLaws.this)
 
     val name = _base.name
     val bases = Seq("base" -> _base)
-  }
 
   class RingProperties(
       val name: String,
@@ -147,8 +144,5 @@ object RingLaws extends GroupLaws {
       val ml: MultiplicativeProperties,
       val parents: Seq[RingProperties],
       val props: (String, Prop)*
-  ) extends RuleSet {
+  ) extends RuleSet:
     def bases = Seq("additive" -> al, "multiplicative" -> ml)
-  }
-
-}

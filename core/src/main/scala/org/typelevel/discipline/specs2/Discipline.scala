@@ -29,15 +29,14 @@ import org.specs2.scalacheck.Parameters
 
 import scala.language.implicitConversions
 
-trait Discipline extends ScalaCheck { self: SpecificationLike =>
+trait Discipline extends ScalaCheck:
+  self: SpecificationLike =>
 
-  def checkAll(name: String, ruleSet: Laws#RuleSet)(implicit p: Parameters) = {
+  def checkAll(name: String, ruleSet: Laws#RuleSet)(using p: Parameters) =
     val properties = ruleSet.all.properties.toList
     br ^ br ^ s"""${ruleSet.name} laws must hold for ${name}""" ^ br ^ t ^
       Fragments.foreach(properties.zipWithIndex) {
         case ((id, prop), n) =>
-          id ! check(prop, p, defaultFreqMapPretty) ^ (if (n != properties.size - 1) br else bt)
+          id ! check(prop, p, defaultFreqMapPretty) ^ (if n != properties.size - 1 then br
+                                                       else bt)
       }
-  }
-
-}

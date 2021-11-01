@@ -65,7 +65,8 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "discipline-specs2",
     libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
-    libraryDependencies += "org.specs2" %%% "specs2-scalacheck" % specs2V
+    libraryDependencies += "org.specs2" %%% "specs2-scalacheck" % specs2V,
+    scalacOptions ++= Seq("-new-syntax", "-indent", "-source:future")
   )
 
 lazy val coreJVM = core.jvm
