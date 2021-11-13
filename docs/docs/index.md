@@ -7,7 +7,7 @@ layout: home
 
 ## Quick Start
 
-To use discipline-specs2 in an existing SBT project with Scala 2.11 or a later version, add the following dependencies to your
+To use discipline-specs2 in an existing SBT project with Scala 2.12, 2.13 or 3.1, add the following dependencies to your
 `build.sbt` depending on your needs:
 
 ```scala
