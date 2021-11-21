@@ -54,7 +54,7 @@ ThisBuild / githubWorkflowBuild := Seq(
 )
 
 val disciplineV = "1.3.0"
-val specs2V = "5.0.0-RC-19"
+val specs2V = "5.0.0-RC-21"
 
 lazy val `discipline-specs2` =
   project.in(file(".")).aggregate(coreJVM, coreJS).enablePlugins(NoPublishPlugin)
