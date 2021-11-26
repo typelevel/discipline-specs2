@@ -26,7 +26,7 @@ ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
 ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/typelevel/jdk-index/raw/main/index.json")
 
 ThisBuild / githubWorkflowUseSbtThinClient := false
-ThisBuild / githubWorkflowTargetBranches := Seq("main")
+ThisBuild / githubWorkflowTargetBranches := Seq("series/1.2.x")
 
 ThisBuild / homepage := Some(url("https://github.com/typelevel/discipline-specs2"))
 ThisBuild / scmInfo := Some(
