@@ -12,6 +12,6 @@ To use discipline-specs2 in an existing SBT project with Scala 2.12, 2.13 or 3.1
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "discipline-specs2" % "1.3.0"
+  "org.typelevel" %% "discipline-specs2" % "1.3.1"
 )
 ```
