@@ -19,8 +19,7 @@ ThisBuild / developers := List(
 val Scala3 = "3.1.0"
 ThisBuild / crossScalaVersions := Seq(Scala3)
 
-ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
-ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/typelevel/jdk-index/raw/main/index.json")
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
 
 ThisBuild / githubWorkflowUseSbtThinClient := false
 ThisBuild / githubWorkflowTargetBranches := Seq("series/2.x")
