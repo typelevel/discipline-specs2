@@ -58,7 +58,7 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("docs/makeMicrosite"), cond = Some(MicrositesCond))
 )
 
-val disciplineV = "1.3.0"
+val disciplineV = "1.4.0"
 val specs2V = "4.13.1"
 val macrotaskExecutorV = "1.0.0"
 
