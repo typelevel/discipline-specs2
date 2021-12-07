@@ -1,6 +1,6 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-ThisBuild / baseVersion := "1.3"
+ThisBuild / baseVersion := "1.4"
 
 ThisBuild / organization := "org.typelevel"
 ThisBuild / organizationName := "Typelevel"
@@ -20,7 +20,7 @@ ThisBuild / developers := List(
 
 val Scala213 = "2.13.7"
 
-ThisBuild / crossScalaVersions := Seq("3.1.0", "2.12.15", Scala213)
+ThisBuild / crossScalaVersions := Seq("3.0.2", "2.12.15", Scala213)
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
 
@@ -70,7 +70,11 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .in(file("core"))
   .settings(
     name := "discipline-specs2",
-    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV
+    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
+    Compile / doc / sources := {
+      val old = (Compile / doc / sources).value
+      if (isDotty.value) Seq() else old
+    }
   )
   .jvmSettings(
     libraryDependencies += {
