@@ -52,7 +52,7 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("docs/makeMicrosite"))
 )
 
-val disciplineV = "1.3.0"
+val disciplineV = "1.4.0"
 val specs2V = "5.0.0-RC-22"
 
 lazy val `discipline-specs2` =
