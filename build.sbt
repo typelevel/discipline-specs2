@@ -46,6 +46,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     }
   )
   .jsSettings(
+    tlVersionIntroduced ~= { _ ++ List("2.12", "2.13").map(_ -> "1.1.0").toMap },
     libraryDependencies += {
       if (tlIsScala3.value)
         ("org.specs2" %%% "specs2-scalacheck" % specs2V)
