@@ -14,7 +14,8 @@ ThisBuild / crossScalaVersions := Seq("3.0.2", "2.12.15", Scala213)
 
 ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
 ThisBuild / startYear := Some(2019)
-ThisBuild / tlSiteApiUrl := Some(url("https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13"))
+ThisBuild / tlSiteApiUrl := Some(
+  url("https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13"))
 
 val disciplineV = "1.4.0"
 val specs2V = "4.13.2"
