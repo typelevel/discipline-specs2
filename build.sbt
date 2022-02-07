@@ -33,7 +33,10 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     Compile / doc / sources := {
       val old = (Compile / doc / sources).value
       if (tlIsScala3.value) Seq() else old
-    }
+    },
+    headerLicense := Some(
+      HeaderLicense.MIT(s"${startYear.value.get}-2022", organizationName.value)
+    )
   )
   .jvmSettings(
     libraryDependencies += {
