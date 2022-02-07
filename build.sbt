@@ -16,7 +16,7 @@ ThisBuild / developers := List(
   Developer("vasilmkd", "Vasil Vasilev", "vasil@vasilev.io", url("https://github.com/vasilmkd"))
 )
 
-val Scala3 = "3.1.0"
+val Scala3 = "3.1.1"
 ThisBuild / crossScalaVersions := Seq(Scala3)
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
