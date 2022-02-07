@@ -10,6 +10,7 @@ ThisBuild / developers := List(
 
 val Scala213 = "2.13.8"
 
+ThisBuild / tlCiReleaseTags := false
 ThisBuild / crossScalaVersions := Seq("3.0.2", "2.12.15", Scala213)
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.1.6")
 
