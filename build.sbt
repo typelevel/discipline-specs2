@@ -1,4 +1,4 @@
-ThisBuild / tlBaseVersion := "1.4"
+ThisBuild / tlBaseVersion := "1.5"
 
 ThisBuild / developers := List(
   tlGitHubDev("larsrh", "Lars Hupel"),
@@ -20,12 +20,12 @@ ThisBuild / tlSiteApiUrl := Some(
   url("https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13"))
 
 val disciplineV = "1.4.0"
-val specs2V = "4.13.2"
+val specs2V = "4.14.0"
 val macrotaskExecutorV = "1.0.0"
 
 lazy val root = tlCrossRootProject.aggregate(core)
 
-lazy val core = crossProject(JSPlatform, JVMPlatform)
+lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
   .settings(
@@ -61,6 +61,20 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
         "org.specs2" %%% "specs2-scalacheck" % specs2V
     },
     libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % macrotaskExecutorV
+  )
+  .nativeSettings(
+    crossScalaVersions := {
+      (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3."))
+    },
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "1.5.0").toMap,
+    libraryDependencies += {
+      if (tlIsScala3.value)
+        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
+          .cross(CrossVersion.for3Use2_13)
+          .exclude("org.scalacheck", "scalacheck_2.13")
+      else
+        "org.specs2" %%% "specs2-scalacheck" % specs2V
+    }
   )
 
 lazy val docs = project.in(file("site")).enablePlugins(TypelevelSitePlugin).dependsOn(core.jvm)
