@@ -1,4 +1,4 @@
-ThisBuild / tlBaseVersion := "1.4"
+ThisBuild / tlBaseVersion := "1.5"
 
 ThisBuild / developers := List(
   tlGitHubDev("larsrh", "Lars Hupel"),
@@ -20,7 +20,7 @@ ThisBuild / tlSiteApiUrl := Some(
   url("https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13"))
 
 val disciplineV = "1.4.0"
-val specs2V = "4.13.2"
+val specs2V = "4.14.1-cross"
 val macrotaskExecutorV = "1.0.0"
 
 lazy val root = tlCrossRootProject.aggregate(core)
@@ -30,37 +30,13 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .in(file("core"))
   .settings(
     name := "discipline-specs2",
-    libraryDependencies += "org.typelevel" %%% "discipline-core" % disciplineV,
-    Compile / doc / sources := {
-      val old = (Compile / doc / sources).value
-      if (tlIsScala3.value) Seq() else old
-    },
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "discipline-core" % disciplineV,
+      "org.specs2" %%% "specs2-scalacheck" % specs2V
+    ),
     headerLicense := Some(
       HeaderLicense.MIT(s"${startYear.value.get}-2022", organizationName.value)
     )
-  )
-  .jvmSettings(
-    libraryDependencies += {
-      if (tlIsScala3.value)
-        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
-          .cross(CrossVersion.for3Use2_13)
-          .exclude("org.scalacheck", "scalacheck_2.13")
-      else
-        "org.specs2" %%% "specs2-scalacheck" % specs2V
-    }
-  )
-  .jsSettings(
-    tlVersionIntroduced ~= { _ ++ List("2.12", "2.13").map(_ -> "1.1.0").toMap },
-    libraryDependencies += {
-      if (tlIsScala3.value)
-        ("org.specs2" %%% "specs2-scalacheck" % specs2V)
-          .cross(CrossVersion.for3Use2_13)
-          .exclude("org.scalacheck", "scalacheck_sjs1_2.13")
-          .exclude("org.scala-js", "scala-js-macrotask-executor_sjs1_2.13")
-      else
-        "org.specs2" %%% "specs2-scalacheck" % specs2V
-    },
-    libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % macrotaskExecutorV
   )
 
 lazy val docs = project.in(file("site")).enablePlugins(TypelevelSitePlugin).dependsOn(core.jvm)
