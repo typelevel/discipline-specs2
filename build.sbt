@@ -21,7 +21,6 @@ ThisBuild / tlSiteApiUrl := Some(
 
 val disciplineV = "1.5.1"
 val specs2V = "4.16.0"
-val macrotaskExecutorV = "1.0.0"
 
 lazy val root = tlCrossRootProject.aggregate(core)
 
