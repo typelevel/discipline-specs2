@@ -1,4 +1,4 @@
-ThisBuild / tlBaseVersion := "1.5"
+ThisBuild / tlBaseVersion := "1.3"
 
 ThisBuild / developers := List(
   tlGitHubDev("larsrh", "Lars Hupel"),
@@ -42,10 +42,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     tlVersionIntroduced ~= { _ ++ List("2.12", "2.13").map(_ -> "1.1.0").toMap }
   )
   .nativeSettings(
-    crossScalaVersions := {
-      (ThisBuild / crossScalaVersions).value.filterNot(_.startsWith("3."))
-    },
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "1.5.0").toMap,
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "1.4.0").toMap,
     libraryDependencies += {
       if (tlIsScala3.value)
         ("org.specs2" %%% "specs2-scalacheck" % specs2V)
