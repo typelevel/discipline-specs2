@@ -15,7 +15,7 @@ ThisBuild / tlCiReleaseTags := false
 ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
 ThisBuild / startYear := Some(2019)
 
-val disciplineV = "1.4.0"
+val disciplineV = "1.5.1"
 val specs2V = "5.0.0"
 
 lazy val `discipline-specs2` =
