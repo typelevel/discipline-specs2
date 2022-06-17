@@ -11,7 +11,7 @@ ThisBuild / developers := List(
 val Scala213 = "2.13.8"
 
 ThisBuild / tlCiReleaseTags := false
-ThisBuild / crossScalaVersions := Seq("3.1.1", "2.12.16", Scala213)
+ThisBuild / crossScalaVersions := Seq("3.1.2", "2.12.15", Scala213)
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.1.6")
 
 ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
@@ -19,7 +19,7 @@ ThisBuild / startYear := Some(2019)
 ThisBuild / tlSiteApiUrl := Some(
   url("https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13"))
 
-val disciplineV = "1.4.0"
+val disciplineV = "1.5.1"
 val specs2V = "4.15.0"
 val macrotaskExecutorV = "1.0.0"
 
