@@ -1,4 +1,4 @@
-ThisBuild / tlBaseVersion := "1.5"
+ThisBuild / tlBaseVersion := "1.4"
 
 ThisBuild / developers := List(
   tlGitHubDev("larsrh", "Lars Hupel"),
@@ -21,11 +21,10 @@ ThisBuild / tlSiteApiUrl := Some(
 
 val disciplineV = "1.5.1"
 val specs2V = "4.16.0"
-val macrotaskExecutorV = "1.0.0"
 
 lazy val root = tlCrossRootProject.aggregate(core)
 
-lazy val core = crossProject(JSPlatform, JVMPlatform)
+lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
   .settings(
@@ -40,6 +39,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   )
   .jsSettings(
     tlVersionIntroduced ~= { _ ++ List("2.12", "2.13").map(_ -> "1.1.0").toMap }
+  )
+  .nativeSettings(
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "1.4.0").toMap
   )
 
 lazy val docs = project.in(file("site")).enablePlugins(TypelevelSitePlugin).dependsOn(core.jvm)
