@@ -11,7 +11,7 @@ ThisBuild / developers := List(
 val Scala213 = "2.13.8"
 
 ThisBuild / tlCiReleaseTags := false
-ThisBuild / crossScalaVersions := Seq("3.2.2", "2.12.16", Scala213)
+ThisBuild / crossScalaVersions := Seq("3.2.2", "2.12.17", Scala213)
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.1.6")
 
 ThisBuild / tlSonatypeUseLegacyHost := false
@@ -22,7 +22,7 @@ ThisBuild / tlSiteApiUrl := Some(
   url("https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13"))
 
 val disciplineV = "1.5.1"
-val specs2V = "4.16.1"
+val specs2V = "4.19.2"
 
 lazy val root = tlCrossRootProject.aggregate(core)
 
