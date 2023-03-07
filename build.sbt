@@ -1,4 +1,4 @@
-ThisBuild / tlBaseVersion := "2.0"
+ThisBuild / tlBaseVersion := "2.1"
 
 ThisBuild / developers := List(
   tlGitHubDev("larsrh", "Lars Hupel"),
@@ -8,7 +8,7 @@ ThisBuild / developers := List(
   Developer("vasilmkd", "Vasil Vasilev", "vasil@vasilev.io", url("https://github.com/vasilmkd"))
 )
 
-val Scala3 = "3.1.2"
+val Scala3 = "3.2.2"
 ThisBuild / crossScalaVersions := Seq(Scala3)
 ThisBuild / tlCiReleaseTags := false
 
