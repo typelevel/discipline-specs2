@@ -22,7 +22,7 @@ ThisBuild / tlSiteApiUrl := Some(
   url("https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13"))
 
 val disciplineV = "1.5.1"
-val specs2V = "4.19.2"
+val specs2V = "4.20.0"
 
 lazy val root = tlCrossRootProject.aggregate(core)
 
