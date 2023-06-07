@@ -8,7 +8,7 @@ ThisBuild / developers := List(
   Developer("vasilmkd", "Vasil Vasilev", "vasil@vasilev.io", url("https://github.com/vasilmkd"))
 )
 
-val Scala213 = "2.13.10"
+val Scala213 = "2.13.11"
 
 ThisBuild / tlCiReleaseTags := false
 ThisBuild / crossScalaVersions := Seq("3.2.2", "2.12.17", Scala213)
