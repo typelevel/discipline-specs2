@@ -21,8 +21,8 @@ ThisBuild / startYear := Some(2019)
 ThisBuild / tlSiteApiUrl := Some(
   url("https://www.javadoc.io/doc/org.typelevel/discipline-specs2_2.13"))
 
-val disciplineV = "1.6.0"
-val specs2V = "4.20.5"
+val disciplineV = "1.7.0"
+val specs2V = "4.20.7"
 
 lazy val root = tlCrossRootProject.aggregate(core)
 
@@ -43,7 +43,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     tlVersionIntroduced ~= { _ ++ List("2.12", "2.13").map(_ -> "1.1.0").toMap }
   )
   .nativeSettings(
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "1.4.0").toMap
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "1.5.0").toMap
   )
 
 lazy val docs = project.in(file("site")).enablePlugins(TypelevelSitePlugin).dependsOn(core.jvm)
