@@ -16,7 +16,7 @@ ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
 ThisBuild / startYear := Some(2019)
 
 val disciplineV = "1.7.0"
-val specs2V = "5.5.3"
+val specs2V = "5.5.7"
 
 lazy val `discipline-specs2` =
   tlCrossRootProject.aggregate(core).settings(name := "discipline-specs2")
