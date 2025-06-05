@@ -14,8 +14,6 @@ ThisBuild / tlCiReleaseTags := false
 ThisBuild / crossScalaVersions := Seq("3.3.5", "2.12.20", Scala213)
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.1.6")
 
-ThisBuild / tlSonatypeUseLegacyHost := false
-
 ThisBuild / licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
 ThisBuild / startYear := Some(2019)
 ThisBuild / tlSiteApiUrl := Some(
