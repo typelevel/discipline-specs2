@@ -8,7 +8,7 @@ ThisBuild / developers := List(
   Developer("vasilmkd", "Vasil Vasilev", "vasil@vasilev.io", url("https://github.com/vasilmkd"))
 )
 
-val Scala3 = "3.3.9"
+val Scala3 = "3.9.0"
 ThisBuild / crossScalaVersions := Seq(Scala3)
 ThisBuild / tlCiReleaseTags := false
 
